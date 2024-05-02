@@ -7,9 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		176C0BF62BE3697F000C0A3C /* WelcomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BF52BE3697F000C0A3C /* WelcomeVC.swift */; };
+		176C0BFA2BE369BA000C0A3C /* FetchWalletVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BF72BE369BA000C0A3C /* FetchWalletVC.swift */; };
+		176C0BFC2BE369BA000C0A3C /* CreateWalletVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BF92BE369BA000C0A3C /* CreateWalletVC.swift */; };
+		176C0BFF2BE38AA7000C0A3C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BFE2BE38AA7000C0A3C /* Constants.swift */; };
+		176C0C022BE38BCC000C0A3C /* WalletModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0C012BE38BCC000C0A3C /* WalletModel.swift */; };
+		176C0C042BE38BEC000C0A3C /* HDKeyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0C032BE38BEC000C0A3C /* HDKeyModel.swift */; };
+		176C0C062BE38C05000C0A3C /* ERC20TokenModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0C052BE38C05000C0A3C /* ERC20TokenModel.swift */; };
+		176C0C082BE38CF4000C0A3C /* SharedUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0C072BE38CF4000C0A3C /* SharedUtilities.swift */; };
 		17BA2DB02BE3640D00B6A956 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BA2DAF2BE3640D00B6A956 /* AppDelegate.swift */; };
 		17BA2DB22BE3640D00B6A956 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BA2DB12BE3640D00B6A956 /* SceneDelegate.swift */; };
-		17BA2DB42BE3640D00B6A956 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BA2DB32BE3640D00B6A956 /* ViewController.swift */; };
 		17BA2DB72BE3640D00B6A956 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BA2DB52BE3640D00B6A956 /* Main.storyboard */; };
 		17BA2DB92BE3640F00B6A956 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17BA2DB82BE3640F00B6A956 /* Assets.xcassets */; };
 		17BA2DBC2BE3640F00B6A956 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BA2DBA2BE3640F00B6A956 /* LaunchScreen.storyboard */; };
@@ -17,10 +24,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		176C0BF52BE3697F000C0A3C /* WelcomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeVC.swift; sourceTree = "<group>"; };
+		176C0BF72BE369BA000C0A3C /* FetchWalletVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchWalletVC.swift; sourceTree = "<group>"; };
+		176C0BF92BE369BA000C0A3C /* CreateWalletVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateWalletVC.swift; sourceTree = "<group>"; };
+		176C0BFE2BE38AA7000C0A3C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		176C0C012BE38BCC000C0A3C /* WalletModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletModel.swift; sourceTree = "<group>"; };
+		176C0C032BE38BEC000C0A3C /* HDKeyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDKeyModel.swift; sourceTree = "<group>"; };
+		176C0C052BE38C05000C0A3C /* ERC20TokenModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ERC20TokenModel.swift; sourceTree = "<group>"; };
+		176C0C072BE38CF4000C0A3C /* SharedUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedUtilities.swift; sourceTree = "<group>"; };
 		17BA2DAC2BE3640D00B6A956 /* EthereumWeb3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EthereumWeb3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17BA2DAF2BE3640D00B6A956 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		17BA2DB12BE3640D00B6A956 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		17BA2DB32BE3640D00B6A956 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		17BA2DB62BE3640D00B6A956 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		17BA2DB82BE3640F00B6A956 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17BA2DBB2BE3640F00B6A956 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -39,6 +53,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		176C0BF22BE3685A000C0A3C /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				17BA2DAF2BE3640D00B6A956 /* AppDelegate.swift */,
+				17BA2DB12BE3640D00B6A956 /* SceneDelegate.swift */,
+			);
+			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		176C0BF32BE36872000C0A3C /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				17BA2DB52BE3640D00B6A956 /* Main.storyboard */,
+				17BA2DBA2BE3640F00B6A956 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboard;
+			sourceTree = "<group>";
+		};
+		176C0BF42BE3689C000C0A3C /* Viewcontrollers */ = {
+			isa = PBXGroup;
+			children = (
+				176C0BF52BE3697F000C0A3C /* WelcomeVC.swift */,
+				176C0BF92BE369BA000C0A3C /* CreateWalletVC.swift */,
+				176C0BF72BE369BA000C0A3C /* FetchWalletVC.swift */,
+			);
+			path = Viewcontrollers;
+			sourceTree = "<group>";
+		};
+		176C0BFD2BE38A91000C0A3C /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				176C0BFE2BE38AA7000C0A3C /* Constants.swift */,
+				176C0C072BE38CF4000C0A3C /* SharedUtilities.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		176C0C002BE38B5A000C0A3C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				176C0C012BE38BCC000C0A3C /* WalletModel.swift */,
+				176C0C032BE38BEC000C0A3C /* HDKeyModel.swift */,
+				176C0C052BE38C05000C0A3C /* ERC20TokenModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		17BA2DA32BE3640D00B6A956 = {
 			isa = PBXGroup;
 			children = (
@@ -58,12 +119,12 @@
 		17BA2DAE2BE3640D00B6A956 /* EthereumWeb3 */ = {
 			isa = PBXGroup;
 			children = (
-				17BA2DAF2BE3640D00B6A956 /* AppDelegate.swift */,
-				17BA2DB12BE3640D00B6A956 /* SceneDelegate.swift */,
-				17BA2DB32BE3640D00B6A956 /* ViewController.swift */,
-				17BA2DB52BE3640D00B6A956 /* Main.storyboard */,
+				176C0C002BE38B5A000C0A3C /* Models */,
+				176C0BFD2BE38A91000C0A3C /* Common */,
+				176C0BF42BE3689C000C0A3C /* Viewcontrollers */,
+				176C0BF32BE36872000C0A3C /* Storyboard */,
+				176C0BF22BE3685A000C0A3C /* AppDelegate */,
 				17BA2DB82BE3640F00B6A956 /* Assets.xcassets */,
-				17BA2DBA2BE3640F00B6A956 /* LaunchScreen.storyboard */,
 				17BA2DBD2BE3640F00B6A956 /* Info.plist */,
 			);
 			path = EthereumWeb3;
@@ -146,9 +207,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17BA2DB42BE3640D00B6A956 /* ViewController.swift in Sources */,
 				17BA2DB02BE3640D00B6A956 /* AppDelegate.swift in Sources */,
 				17BA2DB22BE3640D00B6A956 /* SceneDelegate.swift in Sources */,
+				176C0C062BE38C05000C0A3C /* ERC20TokenModel.swift in Sources */,
+				176C0BFA2BE369BA000C0A3C /* FetchWalletVC.swift in Sources */,
+				176C0BF62BE3697F000C0A3C /* WelcomeVC.swift in Sources */,
+				176C0BFF2BE38AA7000C0A3C /* Constants.swift in Sources */,
+				176C0C022BE38BCC000C0A3C /* WalletModel.swift in Sources */,
+				176C0BFC2BE369BA000C0A3C /* CreateWalletVC.swift in Sources */,
+				176C0C042BE38BEC000C0A3C /* HDKeyModel.swift in Sources */,
+				176C0C082BE38CF4000C0A3C /* SharedUtilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
