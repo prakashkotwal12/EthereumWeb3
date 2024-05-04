@@ -75,4 +75,6 @@ class CreateWalletVC: UIViewController {
 			self.sharedUtils.showAlert(title: title, message: message, viewController: self)
 		}
 	}	
+	
+	
 }

@@ -18,9 +18,36 @@ class WelcomeVC: UIViewController {
 		self.performSegue(withIdentifier: "SegToCreate", sender: self)
 	}
 	@IBAction func onClickFetchWallet(_ sender: UIButton) {
-		self.performSegue(withIdentifier: "SegToFetch", sender: self)
+		doLocalTransfer()
+//		self.performSegue(withIdentifier: "SegToFetch", sender: self)
 	}
-	
+	func doLocalTransfer(){
+		let sdkHelper = SDKHelper()
+		Constants.useLocalServer = true
+		sdkHelper.setUpWeb3 { web3Response in
+			guard web3Response.success else {
+				print("Web3 setup error: \(web3Response.message)")
+				return
+			}
+			
+			sdkHelper.setUpKeyStoreManager(key: sdkHelper.privateKey1) { keyStoreResponse in
+				guard keyStoreResponse.success else {
+					print("KeyStore setup error: \(keyStoreResponse.message)")
+					return
+				}
+				
+				sdkHelper.doLocalTxn(amount: 987) { txnResponse in
+					if txnResponse.success {
+						print("Transaction done")
+					} else {
+						print("Transaction not done: \(txnResponse.message)")
+					}
+				}
+			}
+		}
+		
+		
+	}
 	
 	/*
 	 // MARK: - Navigation
