@@ -22,7 +22,10 @@ class CreateWalletVC: UIViewController {
 	}
 	
 	@IBAction func onClickCreateWallet(_ sender: UIButton) {
-		createWallet()
+		sharedUtils.showLoader(viewController: self)
+		DispatchQueue.global(qos: .background).asyncAfter(deadline: .now()) {
+			self.createWallet()
+		}
 	}
 	
 	@IBAction func onClickCopyAddress(_ sender: UIButton) {
@@ -34,26 +37,16 @@ class CreateWalletVC: UIViewController {
 	}
 	
 	func createWallet() {
-		sharedUtils.showLoader(viewController: self)
-		
-		DispatchQueue.global().async {
-			do {
-				guard let mnemonics = try BIP39.generateMnemonics(bitsOfEntropy: Constants.bitsOfEntropy),
-							let keystore = try BIP32Keystore(mnemonics: mnemonics, password: Constants.password, mnemonicsPassword: "", language: .english),
-							let keyData = try? JSONEncoder().encode(keystore.keystoreParams),
-							let address = keystore.addresses?.first?.address else {
-					throw NSError(domain: "Create Wallet", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to create wallet"])
-				}
-				
-				let wallet = Wallet(address: address, data: keyData, name: Constants.name, isHD: true)
-				
-				DispatchQueue.main.async {
-					self.walletAddressLabel.text = wallet.address
+		SDKHelper().getMnemonics { response, mnemonics, wallet in
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+				self.sharedUtils.hideLoader()
+				if response.success {
+					self.walletAddressLabel.text = wallet?.address ?? ""
 					self.phraseLabel.text = mnemonics
-					self.sharedUtils.hideLoader()
+				} else {
+					self.showAlert(title: "Error", message: response.message)
+//					self.handleCreateWalletError(response.error ?? CustomError.unknownError)
 				}
-			} catch {
-				self.handleCreateWalletError(error)
 			}
 		}
 	}
@@ -63,18 +56,11 @@ class CreateWalletVC: UIViewController {
 		UIPasteboard.general.string = text
 	}
 	
-	func handleCreateWalletError(_ error: Error) {
-		DispatchQueue.main.async {
-			self.sharedUtils.hideLoader()
-			self.showAlert(title: "Error", message: error.localizedDescription)
-		}
-	}
+//	func handleCreateWalletError(_ error: Error) {
+//		showAlert(title: "Error", message: error.localizedDescription)
+//	}
 	
 	func showAlert(title: String, message: String) {
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-			self.sharedUtils.showAlert(title: title, message: message, viewController: self)
-		}
-	}	
-	
-	
+		sharedUtils.showAlert(title: title, message: message, viewController: self)
+	}
 }

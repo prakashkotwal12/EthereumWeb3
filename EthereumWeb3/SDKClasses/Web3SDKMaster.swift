@@ -133,13 +133,13 @@ class Web3SDKMaster {
 	///   - address: Ethereum address
 	///   - keystoreManager: Keystore manager
 	///   - completion: Completion handler returning SDKResponse and balance amount
-	func getBalance(for address: EthereumAddress, keystoreManager: KeystoreManager, completion: @escaping (SDKResponse, BigUInt?) -> Void) {
+	func getBalance(for address: EthereumAddress, completion: @escaping (SDKResponse, BigUInt?) -> Void) {
 		guard let web3 = web3 else {
 			let response = SDKResponse(success: false, message: "Web3 not initialized", error: nil)
 			completion(response, nil)
 			return
 		}
-		walletManager.fetchBalance(web3: web3, keystoreManager: keystoreManager, walletAddress: address) { response, balance in
+		walletManager.fetchBalance(web3: web3, walletAddress: address) { response, balance in
 			
 			completion(response, balance)
 		}

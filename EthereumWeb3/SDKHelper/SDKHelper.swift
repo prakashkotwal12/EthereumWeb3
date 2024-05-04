@@ -24,7 +24,7 @@ class SDKHelper {
 		if isLocalServerEnabled{
 			urlString = Constants().ganacheURL
 		}
-		 
+		
 		guard let url = URL(string: urlString) else {
 			completion(SDKResponse(success: false, message: "Error while setting up URL", error: nil))
 			return
@@ -71,6 +71,55 @@ class SDKHelper {
 	///   - completion: A closure to call upon completion. Receives an `SDKResponse`.
 	func doLocalTxn(amount: BigUInt = 100, completion: @escaping (SDKResponse) -> Void) {
 		LocalTransaction().sendTxn(keystore: self.keystoreManager, amount: amount, completion: completion)
-	}	
+	}
+	
+	/// Generates mnemonics and returns them along with an SDKResponse.
+	///
+	/// - Parameter completion: A closure to be called once the operation is completed, containing an SDKResponse and optional mnemonics string.
+	func getMnemonics(completion: @escaping (SDKResponse, String?, Wallet?) -> Void) {
+		sharedSDK.createWallet { response, mnemonics in
+			if response.success {
+				print("Mnemonics: \(mnemonics ?? "")")
+				self.getAddress(from: mnemonics ?? "") { responseFromAddress, wallet in
+					if responseFromAddress.success {
+						print("Get Address from mnemonics: \(wallet?.address ?? "")")
+					} else {
+						print("Error while getting address from mnemonics: \(responseFromAddress.message)")
+					}
+					completion(response, mnemonics, wallet)
+				}
+			} else {
+				print("Error getting Mnemonics")
+				completion(response, nil, nil)
+			}
+		}
+		
+	}
+	
+	/// Retrieves the wallet address associated with the given mnemonics.
+	///
+	/// - Parameters:
+	///   - mnemonics: The mnemonics string.
+	///   - completion: A closure to be called once the operation is completed, containing an SDKResponse and optional Wallet object.
+	func getAddress(from mnemonics: String, completion: @escaping (SDKResponse, Wallet?) -> Void) {
+		sharedSDK.fetchAddress(mnemonics: mnemonics) { response, wallet in
+			if response.success {
+				print("Wallet Address: \(wallet?.address ?? "")")
+			} else {
+				print("Error getting Wallet Address")
+			}
+			completion(response, wallet)
+		}
+	}
+	
+	func getBalance(from address: String, completion: @escaping (SDKResponse, BigUInt?) -> Void) {
+		
+		sharedSDK.getBalance(for: EthereumAddress(address)!) { response, balance in
+			if response.success{
+				print("Availbale balance is : \(balance ?? 0)")
+			}
+			completion(response, balance)
+		}
+	}
 }
 

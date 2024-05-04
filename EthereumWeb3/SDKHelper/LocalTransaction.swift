@@ -51,7 +51,7 @@ class LocalTransaction {
 				return
 			}
 			print("Fetched Address1: \(address1)")
-			self.sharedSDK.getBalance(for: address1, keystoreManager: keystore) { response, balance in
+			self.sharedSDK.getBalance(for: address1) { response, balance in
 				if response.success {
 					let balanceInAddress1 = balance ?? 0
 					if balanceInAddress1 < amount{
@@ -65,7 +65,7 @@ class LocalTransaction {
 							return
 						}
 						print("Fetched Address2: \(address2)")
-						self.sharedSDK.getBalance(for: address2, keystoreManager: keystore) { response, balance2 in
+						self.sharedSDK.getBalance(for: address2) { response, balance2 in
 							if response.success {
 								print("Address2 Balance: \(balance ?? 0)")
 								self.sharedSDK.doTransaction(fromAddress: address1, toAddress: address2, amount: amount) { response, result in

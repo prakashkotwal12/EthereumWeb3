@@ -8,9 +8,17 @@
 import UIKit
 
 class WelcomeVC: UIViewController {
+	let sdkHelper = SDKHelper()
+	let sharedUtils = SharedUtilities.shared
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		// Dispatch a task to a background thread
+		sharedUtils.showLoader(viewController: self)
+		DispatchQueue.global(qos: .background).asyncAfter(deadline: .now()) {
+			self.setUpWeb3SDK()
+		}
+
 		
 		// Do any additional setup after loading the view.
 	}
@@ -18,31 +26,44 @@ class WelcomeVC: UIViewController {
 		self.performSegue(withIdentifier: "SegToCreate", sender: self)
 	}
 	@IBAction func onClickFetchWallet(_ sender: UIButton) {
-		doLocalTransfer()
-//		self.performSegue(withIdentifier: "SegToFetch", sender: self)
+//		doLocalTransfer()
+		self.performSegue(withIdentifier: "SegToFetch", sender: self)
 	}
-	func doLocalTransfer(){
-		let sdkHelper = SDKHelper()
+	func setUpWeb3SDK() {
 		Constants.useLocalServer = true
 		sdkHelper.setUpWeb3 { web3Response in
-			guard web3Response.success else {
-				print("Web3 setup error: \(web3Response.message)")
-				return
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+				guard web3Response.success else {
+					print("Web3 setup error: \(web3Response.message)")
+					
+					self.sharedUtils.hideLoader()
+					return
+				}
+				self.setUpKeyStoreManager()
 			}
-			
-			sdkHelper.setUpKeyStoreManager(key: sdkHelper.privateKey1) { keyStoreResponse in
+		}
+	}
+	
+	func setUpKeyStoreManager(){
+		self.sdkHelper.setUpKeyStoreManager(key: self.sdkHelper.privateKey1) { keyStoreResponse in
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 				guard keyStoreResponse.success else {
+					self.sharedUtils.hideLoader()
 					print("KeyStore setup error: \(keyStoreResponse.message)")
 					return
 				}
-				
-				sdkHelper.doLocalTxn(amount: 987) { txnResponse in
-					if txnResponse.success {
-						print("Transaction done")
-					} else {
-						print("Transaction not done: \(txnResponse.message)")
-					}
-				}
+				print("I am here")
+				self.sharedUtils.hideLoader()
+			}
+		}
+	}
+	
+	func doLocalTransfer(){
+		sdkHelper.doLocalTxn(amount: 987) { txnResponse in
+			if txnResponse.success {
+				print("Transaction done")
+			} else {
+				print("Transaction not done: \(txnResponse.message)")
 			}
 		}
 		

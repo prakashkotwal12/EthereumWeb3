@@ -23,7 +23,29 @@ class FetchWalletVC: UIViewController {
 	}
 	
 	@IBAction func onClickFetchBalance(_ sender: UIButton) {
-		getPrivateKey()
+		getBalance()
+	}
+	func getBalance(){
+		sharedUtils.showLoader(viewController: self)
+		guard let address = wallet?.address else{
+			print("Address not added in wallet")
+			sharedUtils.hideLoader()
+			return
+		}
+		SDKHelper().getBalance(from: address) { response, balance in
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+				self.sharedUtils.hideLoader()
+				if response.success{
+					guard let amount = balance else{
+						return
+					}
+					self.walletBalanceLabel.text = "Balance: \(amount)"
+				}
+				else{
+					print("Error in fetching balance: \(response.message)")
+				}
+			}
+		}
 	}
 	
 	@IBAction func onClickFetchAddress(_ sender: UIButton) {
@@ -45,88 +67,25 @@ class FetchWalletVC: UIViewController {
 		}
 		
 		sharedUtils.showLoader(viewController: self)
-		DispatchQueue.global().async {
-			do {
-				guard let keystore = try BIP32Keystore(
-					mnemonics: mnemonics,
-					password: Constants.password,
-					mnemonicsPassword: "",
-					language: .english
-				),
-							let keyData = try? JSONEncoder().encode(keystore.keystoreParams),
-							let address = keystore.addresses?.first?.address else {
-					throw NSError(domain: "Fetch Address", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to create wallet"])
+		SDKHelper().getAddress(from: mnemonics) { response, wallet in
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+				if response.success{
+					let address = wallet?.address ?? ""
+					print("Address fetched: \(address)")
+					self.wallet = wallet
+					self.walletAddressLabel.text = address
+					print("Address fetched after: \(self.walletAddressLabel.text!)")
 				}
-				
-				self.wallet = Wallet(address: address, data: keyData, name: Constants.name, isHD: true)
-				
-				DispatchQueue.main.async {
-					self.walletAddressLabel.text = self.wallet?.address
-					self.sharedUtils.hideLoader()
+				else{
+					print("Error in fetching Address: \(response.message)")
 				}
-			} catch {
-				self.handleFetchError(error)
-			}
-		}
-	}
-	
-	func getPrivateKey() {
-		guard let wallet = wallet else {
-			showAlert(title: "Error", message: "Wallet not created yet")
-			return
-		}
-		
-		sharedUtils.showLoader(viewController: self)
-		DispatchQueue.global().async {
-			do {
-				let password = Constants.password
-				let data = wallet.data
-				let keystoreManager: KeystoreManager
-				if wallet.isHD {
-					let keystore = BIP32Keystore(data)!
-					keystoreManager = KeystoreManager([keystore])
-				} else {
-					let keystore = EthereumKeystoreV3(data)!
-					keystoreManager = KeystoreManager([keystore])
-				}
-				
-				let ethereumAddress = EthereumAddress(wallet.address)!
-				let pkData = try keystoreManager.UNSAFE_getPrivateKeyData(password: password, account: ethereumAddress).toHexString()
-				print("pkdata: \(dump(pkData))")
-				
-				DispatchQueue.main.async {
-					self.fetchBalance(keystoreManager: keystoreManager)
-				}
-			} catch {
-				self.handleFetchError(error)
-			}
-		}
-	}
-	
-	func fetchBalance(keystoreManager: KeystoreManager) {
-		Task {
-			do {
-				let web3 = try await Web3.InfuraMainnetWeb3()
-				web3.addKeystoreManager(keystoreManager)
-				
-				guard let walletAddress = EthereumAddress(self.walletAddressLabel.text ?? "") else {
-					throw NSError(domain: "Fetch Balance", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid wallet address"])
-				}
-				
-				let balanceResult = try await web3.eth.getBalance(for: walletAddress)
-				
-				DispatchQueue.main.async {
-					self.walletBalanceLabel.text = "Balance: \(balanceResult)"
-					self.sharedUtils.hideLoader()
-				}
-			} catch {
-				self.handleFetchError(error)
+				self.sharedUtils.hideLoader()
 			}
 		}
 	}
 	
 	func handleFetchError(_ error: Error) {
-		DispatchQueue.main.async {
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 			print("Error fetching data: \(error.localizedDescription)")
 			self.sharedUtils.hideLoader()
 			self.showAlert(title: "Error", message: error.localizedDescription)

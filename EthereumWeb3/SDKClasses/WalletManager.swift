@@ -133,7 +133,7 @@ class WalletManager {
 	}
 	
 	// Function to fetch balance for a wallet
-	func fetchBalance(web3 : Web3, keystoreManager: KeystoreManager, walletAddress: EthereumAddress, completion: @escaping (SDKResponse, BigUInt?) -> Void) {
+	func fetchBalance(web3 : Web3, walletAddress: EthereumAddress, completion: @escaping (SDKResponse, BigUInt?) -> Void) {
 		
 		// Perform asynchronous task
 		Task {
