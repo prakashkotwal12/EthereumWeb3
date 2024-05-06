@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		171AD14D2BE78B9B00C19088 /* TransferVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171AD14C2BE78B9B00C19088 /* TransferVC.swift */; };
+		171AD14F2BE7A94800C19088 /* AlchemyConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171AD14E2BE7A94800C19088 /* AlchemyConstants.swift */; };
 		176C0BF62BE3697F000C0A3C /* WelcomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BF52BE3697F000C0A3C /* WelcomeVC.swift */; };
 		176C0BFA2BE369BA000C0A3C /* FetchWalletVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BF72BE369BA000C0A3C /* FetchWalletVC.swift */; };
 		176C0BFC2BE369BA000C0A3C /* CreateWalletVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C0BF92BE369BA000C0A3C /* CreateWalletVC.swift */; };
@@ -33,6 +35,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		171AD14C2BE78B9B00C19088 /* TransferVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferVC.swift; sourceTree = "<group>"; };
+		171AD14E2BE7A94800C19088 /* AlchemyConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlchemyConstants.swift; sourceTree = "<group>"; };
 		176C0BF52BE3697F000C0A3C /* WelcomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeVC.swift; sourceTree = "<group>"; };
 		176C0BF72BE369BA000C0A3C /* FetchWalletVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchWalletVC.swift; sourceTree = "<group>"; };
 		176C0BF92BE369BA000C0A3C /* CreateWalletVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateWalletVC.swift; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 				176C0BF52BE3697F000C0A3C /* WelcomeVC.swift */,
 				176C0BF92BE369BA000C0A3C /* CreateWalletVC.swift */,
 				176C0BF72BE369BA000C0A3C /* FetchWalletVC.swift */,
+				171AD14C2BE78B9B00C19088 /* TransferVC.swift */,
 			);
 			path = Viewcontrollers;
 			sourceTree = "<group>";
@@ -138,7 +143,6 @@
 			children = (
 				17E00CCC2BE68C3C0095753F /* SDKClasses */,
 				17E00CC52BE68C3C0095753F /* SDKHelper */,
-				176C0C002BE38B5A000C0A3C /* Models */,
 				176C0BFD2BE38A91000C0A3C /* Common */,
 				176C0BF42BE3689C000C0A3C /* Viewcontrollers */,
 				176C0BF32BE36872000C0A3C /* Storyboard */,
@@ -153,6 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				17E00CC12BE68C3C0095753F /* Constants.swift */,
+				171AD14E2BE7A94800C19088 /* AlchemyConstants.swift */,
 				17E00CC22BE68C3C0095753F /* GanacheConstants.swift */,
 				17E00CC32BE68C3C0095753F /* LocalTransaction.swift */,
 				17E00CC42BE68C3C0095753F /* SDKHelper.swift */,
@@ -163,6 +168,7 @@
 		17E00CCC2BE68C3C0095753F /* SDKClasses */ = {
 			isa = PBXGroup;
 			children = (
+				176C0C002BE38B5A000C0A3C /* Models */,
 				17E00CC62BE68C3C0095753F /* NetworkManager.swift */,
 				17E00CC72BE68C3C0095753F /* SDKResponse.swift */,
 				17E00CC82BE68C3C0095753F /* TransactionManager.swift */,
@@ -253,12 +259,14 @@
 				17E00CCF2BE68C3C0095753F /* LocalTransaction.swift in Sources */,
 				17E00CD52BE68C3C0095753F /* Web3ErrorDelegate.swift in Sources */,
 				17BA2DB02BE3640D00B6A956 /* AppDelegate.swift in Sources */,
+				171AD14F2BE7A94800C19088 /* AlchemyConstants.swift in Sources */,
 				17E00CCD2BE68C3C0095753F /* Constants.swift in Sources */,
 				17BA2DB22BE3640D00B6A956 /* SceneDelegate.swift in Sources */,
 				17E00CD32BE68C3C0095753F /* TransactionManager.swift in Sources */,
 				176C0C062BE38C05000C0A3C /* ERC20TokenModel.swift in Sources */,
 				17E00CD42BE68C3C0095753F /* WalletManager.swift in Sources */,
 				176C0BFA2BE369BA000C0A3C /* FetchWalletVC.swift in Sources */,
+				171AD14D2BE78B9B00C19088 /* TransferVC.swift in Sources */,
 				17E00CCE2BE68C3C0095753F /* GanacheConstants.swift in Sources */,
 				176C0BF62BE3697F000C0A3C /* WelcomeVC.swift in Sources */,
 				17E00CD02BE68C3C0095753F /* SDKHelper.swift in Sources */,

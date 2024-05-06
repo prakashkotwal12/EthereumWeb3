@@ -10,7 +10,7 @@ import Web3Core
 import web3swift
 
 class FetchWalletVC: UIViewController {
-	
+	let sdkHelper = SDKHelper.sharedSDKHelper
 	@IBOutlet weak var walletBalanceLabel: UILabel!
 	@IBOutlet weak var walletAddressLabel: UILabel!
 	@IBOutlet weak var walletPhraseTextView: UITextView!
@@ -20,6 +20,11 @@ class FetchWalletVC: UIViewController {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		if Constants.useAlchemyServer{
+			wallet = Wallet(address: AlchemyConstants().address1, name: Constants.name, isHD: false)
+			self.walletAddressLabel.text = wallet?.address ?? ""
+			getBalance()
+		}
 	}
 	
 	@IBAction func onClickFetchBalance(_ sender: UIButton) {
@@ -32,8 +37,8 @@ class FetchWalletVC: UIViewController {
 			sharedUtils.hideLoader()
 			return
 		}
-		SDKHelper().getBalance(from: address) { response, balance in
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+		sdkHelper.getBalance(from: address) { response, balance in
+			DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 				self.sharedUtils.hideLoader()
 				if response.success{
 					guard let amount = balance else{
@@ -67,7 +72,7 @@ class FetchWalletVC: UIViewController {
 		}
 		
 		sharedUtils.showLoader(viewController: self)
-		SDKHelper().getAddress(from: mnemonics) { response, wallet in
+		sdkHelper.getAddress(from: mnemonics) { response, wallet in
 			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 				if response.success{
 					let address = wallet?.address ?? ""

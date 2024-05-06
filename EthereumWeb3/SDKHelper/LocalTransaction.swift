@@ -44,42 +44,110 @@ class LocalTransaction {
 	///   - keystore: The keystore manager.
 	///   - amount: The amount to transfer.
 	///   - completion: A closure to call upon completion. Receives an `SDKResponse`.
-	func sendTxn(keystore: KeystoreManager, amount: BigUInt, completion: @escaping (SDKResponse) -> Void) {
-		getLocalAddress1 { address1 in
-			guard let address1 = address1 else {
-				completion(SDKResponse(success: false, message: "Failed to get local address 1", error: nil))
+	///
+	
+	func sendTxn(address1 : EthereumAddress?, address2 : EthereumAddress?, amount: BigUInt, completion: @escaping (SDKResponse, TransactionSendingResult?) -> Void) {
+		guard let fromAddress = address1, let toAddress = address2 else{
+			fetchAddressAndDoTxn(amount: amount, completion: completion)
+			return
+		}
+		performTransaction(from: fromAddress, to: toAddress, amount: amount, completion: completion)
+		
+	}
+	
+	private func performTransaction(from address1: EthereumAddress, to address2: EthereumAddress, amount: BigUInt, completion: @escaping (SDKResponse, TransactionSendingResult?) -> Void) {
+		let group = DispatchGroup()
+		var balance1: BigUInt?
+		var balance2: BigUInt?
+		var error1: Error?
+		var error2: Error?
+		
+		// Fetch balance for address1
+		group.enter()
+		sharedSDK.getBalance(for: address1) { response, balance in
+			if response.success {
+				balance1 = balance
+			} else {
+				error1 = response.error
+			}
+			group.leave()
+		}
+		
+		// Fetch balance for address2
+		group.enter()
+		sharedSDK.getBalance(for: address2) { response, balance in
+			if response.success {
+				balance2 = balance
+			} else {
+				error2 = response.error
+			}
+			group.leave()
+		}
+		
+		group.notify(queue: .main) {
+			// Check if both balances are fetched successfully
+			guard let balance1 = balance1, let balance2 = balance2 else {
+				completion(SDKResponse(success: false, message: "Failed to get balance for one or more addresses", error: nil), nil)
 				return
 			}
-			print("Fetched Address1: \(address1)")
-			self.sharedSDK.getBalance(for: address1) { response, balance in
-				if response.success {
-					let balanceInAddress1 = balance ?? 0
-					if balanceInAddress1 < amount{
-						completion(SDKResponse(success: false, message: "Balance is not sufficient.", error: nil))
-						return
-					}
-					print("Address1 Balance: \(balance ?? 0)")
-					self.getLocalAddress2 { address2 in
-						guard let address2 = address2 else {
-							completion(SDKResponse(success: false, message: "Failed to get local address 2", error: nil))
-							return
-						}
-						print("Fetched Address2: \(address2)")
-						self.sharedSDK.getBalance(for: address2) { response, balance2 in
-							if response.success {
-								print("Address2 Balance: \(balance ?? 0)")
-								self.sharedSDK.doTransaction(fromAddress: address1, toAddress: address2, amount: amount) { response, result in
-									completion(response)
-								}
-							} else {
-								completion(SDKResponse(success: false, message: "Failed to get balance for address 2", error: nil))
-							}
-						}
-					}
-				} else {
-					completion(SDKResponse(success: false, message: "Failed to get balance for address 1", error: nil))
-				}
+			
+			// Check if balance of address1 is sufficient
+			if balance1 < amount {
+				completion(SDKResponse(success: false, message: "Balance is not sufficient for address 1", error: nil), nil)
+				return
+			}
+			
+			// Proceed with the transaction
+			self.sharedSDK.doTransaction(fromAddress: address1, toAddress: address2, amount: amount) { response, result in
+				completion(response, result)
 			}
 		}
-	}	
+	}
+	
+	private func fetchAddressAndDoTxn(amount: BigUInt, completion: @escaping (SDKResponse, TransactionSendingResult?) -> Void) {
+			let dispatchGroup = DispatchGroup()
+			var address1: EthereumAddress?
+			var address2: EthereumAddress?
+			var error: SDKResponse?
+
+			// Fetch address1
+			dispatchGroup.enter()
+			getLocalAddress1 { fetchedAddress1 in
+					if let fetchedAddress1 = fetchedAddress1 {
+							address1 = fetchedAddress1
+					} else {
+							error = SDKResponse(success: false, message: "Failed to get local address 1", error: nil)
+					}
+					dispatchGroup.leave()
+			}
+
+			// Fetch address2
+			dispatchGroup.enter()
+			getLocalAddress2 { fetchedAddress2 in
+					if let fetchedAddress2 = fetchedAddress2 {
+							address2 = fetchedAddress2
+					} else {
+							error = SDKResponse(success: false, message: "Failed to get local address 2", error: nil)
+					}
+					dispatchGroup.leave()
+			}
+
+			// Notify when both addresses are fetched or if there's an error
+			dispatchGroup.notify(queue: .global()) {
+					guard error == nil else {
+							completion(error!, nil)
+							return
+					}
+					
+					guard let address1 = address1, let address2 = address2 else {
+							completion(SDKResponse(success: false, message: "Failed to get one or more addresses", error: nil), nil)
+							return
+					}
+
+					// Both addresses fetched successfully, proceed with the transaction
+				self.performTransaction(from: address1, to: address2, amount: amount, completion: completion)
+			}
+	}
+
+
 }

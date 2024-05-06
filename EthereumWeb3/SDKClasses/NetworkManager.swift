@@ -31,7 +31,7 @@ class NetworkManager {
 			return
 		}
 		
-		// Encode keystore params
+//		 Encode keystore params
 		guard let keyData = try? JSONEncoder().encode(keyStore.keystoreParams) else {
 			// Failed to encode keystore params error
 			response.message = "Failed to encode keystore params"

@@ -11,7 +11,7 @@ import Web3Core
 import web3swift
 
 class CreateWalletVC: UIViewController {
-	
+	let sdkHelper = SDKHelper.sharedSDKHelper
 	@IBOutlet weak var walletAddressLabel: UILabel!
 	@IBOutlet weak var phraseLabel: UILabel!
 	
@@ -37,7 +37,7 @@ class CreateWalletVC: UIViewController {
 	}
 	
 	func createWallet() {
-		SDKHelper().getMnemonics { response, mnemonics, wallet in
+		sdkHelper.getMnemonics { response, mnemonics, wallet in
 			DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 				self.sharedUtils.hideLoader()
 				if response.success {

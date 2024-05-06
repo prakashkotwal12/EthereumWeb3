@@ -12,24 +12,25 @@ import Web3Core
 import BigInt
 
 class SDKHelper {
+	static let sharedSDKHelper = SDKHelper()
 	let sharedSDK = Web3SDKMaster.shared
 	let privateKey1 = GanacheConstants().privateKey1
-	var keystoreManager: KeystoreManager!
+	//var keystoreManager: KeystoreManager!
 	
 	/// Set up Web3 SDK.
 	/// - Parameter completion: A closure to call upon completion. Receives an `SDKResponse`.
 	func setUpWeb3(completion: @escaping (SDKResponse) -> Void) {
-		let isLocalServerEnabled = Constants.useLocalServer
-		var urlString = Constants().AlchemyURL
-		if isLocalServerEnabled{
-			urlString = Constants().ganacheURL
+		let isAlchemyServerEnabled = Constants.useAlchemyServer
+		var urlString = Constants().ganacheURL
+		if isAlchemyServerEnabled{
+			urlString = Constants().AlchemyURL
 		}
 		
 		guard let url = URL(string: urlString) else {
 			completion(SDKResponse(success: false, message: "Error while setting up URL", error: nil))
 			return
 		}
-		sharedSDK.setUpWeb3(providerURL: url) { response in
+		sharedSDK.setUpWeb3(providerURL: url, password: Constants.password, privateKey: privateKey1) { response in
 			if response.success {
 				print("Web3 Setup done")
 				completion(SDKResponse(success: true, message: "Setup done", error: nil))
@@ -43,41 +44,44 @@ class SDKHelper {
 	/// - Parameters:
 	///   - key: The private key.
 	///   - completion: A closure to call upon completion. Receives an `SDKResponse`.
-	func setUpKeyStoreManager(key: String, completion: @escaping (SDKResponse) -> Void) {
-		sharedSDK.getKeyStoreManager(password: Constants.password, privateKey: key) { response, keystore in
-			if response.success {
-				guard let keystoreManager = keystore else {
-					completion(SDKResponse(success: false, message: response.message, error: nil))
-					return
-				}
-				self.keystoreManager = keystoreManager
-				self.sharedSDK.setKeyStoreManager(keystoreManager: keystoreManager) { response in
-					if response.success {
-						print("Keystoremanager set up done")
-						completion(SDKResponse(success: true, message: response.message, error: nil))
-					} else {
-						completion(SDKResponse(success: false, message: response.message, error: nil))
-					}
-				}
-			} else {
-				completion(SDKResponse(success: false, message: response.message, error: nil))
-			}
-		}
-	}
+//	func setUpKeyStoreManager(key: String, completion: @escaping (SDKResponse) -> Void) {
+//		sharedSDK.getKeyStoreManager(password: Constants.password, privateKey: key) { response, keystore in
+//			if response.success {
+//				guard let keystoreManager = keystore else {
+//					completion(SDKResponse(success: false, message: response.message, error: nil))
+//					return
+//				}
+//				self.keystoreManager = keystoreManager
+//				self.sharedSDK.setKeyStoreManager(keystoreManager: keystoreManager) { response in
+//					if response.success {
+//						print("Keystoremanager set up done")
+//						completion(SDKResponse(success: true, message: response.message, error: nil))
+//					} else {
+//						completion(SDKResponse(success: false, message: response.message, error: nil))
+//					}
+//				}
+//			} else {
+//				completion(SDKResponse(success: false, message: response.message, error: nil))
+//			}
+//		}
+//	}
 	
 	/// Perform a local transaction.
 	/// - Parameters:
 	///   - amount: The amount to transfer.
 	///   - completion: A closure to call upon completion. Receives an `SDKResponse`.
-	func doLocalTxn(amount: BigUInt = 100, completion: @escaping (SDKResponse) -> Void) {
-		LocalTransaction().sendTxn(keystore: self.keystoreManager, amount: amount, completion: completion)
+	func doLocalTxn(address1 : String, address2: String, amount: Int = 100, completion: @escaping (SDKResponse, TransactionSendingResult?) -> Void) {
+		let amountBigUInt = BigUInt(amount)
+		let ethAddress1 = EthereumAddress(address1)
+		let ethAddress2 = EthereumAddress(address2)
+		LocalTransaction().sendTxn(address1: ethAddress1, address2: ethAddress2, amount: amountBigUInt, completion: completion)
 	}
 	
 	/// Generates mnemonics and returns them along with an SDKResponse.
 	///
 	/// - Parameter completion: A closure to be called once the operation is completed, containing an SDKResponse and optional mnemonics string.
 	func getMnemonics(completion: @escaping (SDKResponse, String?, Wallet?) -> Void) {
-		sharedSDK.createWallet { response, mnemonics in
+		sharedSDK.createWallet(entropy: Constants.bitsOfEntropy) { response, mnemonics in
 			if response.success {
 				print("Mnemonics: \(mnemonics ?? "")")
 				self.getAddress(from: mnemonics ?? "") { responseFromAddress, wallet in

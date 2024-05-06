@@ -7,7 +7,7 @@
 import Foundation
 struct Wallet {
 	let address: String
-	let data: Data
+//	let data: Data
 	let name: String
 	let isHD: Bool
 }

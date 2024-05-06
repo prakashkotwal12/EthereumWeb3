@@ -15,7 +15,8 @@ class Web3SDKMaster {
 	
 	// Web3 instance
 	private var web3: Web3?
-	
+	private var keystore: EthereumKeystoreV3?
+	private var keystoreManager: KeystoreManager?
 	// Managers
 	private let walletManager = WalletManager()
 	private let transactionManager = TransactionManager()
@@ -27,11 +28,13 @@ class Web3SDKMaster {
 	/// Set up Web3 instance with provided provider URL
 	///
 	/// - Parameter providerURL: The URL of the provider
-	func setUpWeb3(providerURL: URL, completion: @escaping (SDKResponse) -> Void) {
+	func setUpWeb3(providerURL: URL, password : String, privateKey: String, completion: @escaping (SDKResponse) -> Void) {
 		Task{
 			do {
 				web3 = try await Web3.new(providerURL)
-				completion(SDKResponse(success: true, message: "Web3 setup successful", error: nil))
+				print("Web3 Setup using URL: \(providerURL)")
+				self.setKeyStoreManager(password: password, privateKey: privateKey, completion: completion)
+//				completion(SDKResponse(success: true, message: "Web3 setup successful", error: nil))
 			} catch {
 				completion(SDKResponse(success: false, message: "Failed to set up Web3", error: error))
 			}
@@ -48,65 +51,62 @@ class Web3SDKMaster {
 
 	 - Note: The private key is expected to be in hexadecimal format.
 	 */
-	func getKeyStoreManager(password : String, privateKey: String, completion: @escaping (SDKResponse, KeystoreManager?) -> Void) {
+	private func setKeyStoreManager(password : String, privateKey: String, completion: @escaping (SDKResponse) -> Void) {
 		let formattedKey = privateKey.trimmingCharacters(in: .whitespacesAndNewlines)
 		guard let dataKey = Data.fromHex(formattedKey) else {
-			completion(SDKResponse(success: false, message: "Invalid private key format", error: nil), nil)
+			completion(SDKResponse(success: false, message: "Invalid private key format", error: nil))
 			return
 		}
 		
 		do {
 			guard let keyStore = try EthereumKeystoreV3(privateKey: dataKey, password: password) else {
-				completion(SDKResponse(success: false, message: "Can not generate Keystore", error: nil), nil)
+				completion(SDKResponse(success: false, message: "Can not generate Keystore", error: nil))
 				return
 			}
 			let keyData = try JSONEncoder().encode(keyStore.keystoreParams)
 			guard let _ = keyStore.addresses?.first?.address else {
-				completion(SDKResponse(success: false, message: "Address not found", error: nil), nil)
+				completion(SDKResponse(success: false, message: "Address not found", error: nil))
 				return
 			}
 			
-//			let wallet = Wallet(address: address, data: keyData, name: walletName, isHD: false)
+			//			let wallet = Wallet(address: address, data: keyData, name: walletName, isHD: false)
 			
 			Task {
-//				do {
-					
-					let keystoreManager: KeystoreManager
-//					if wallet.isHD {
-//						let keystore = BIP32Keystore(keyData)!
-//						keystoreManager = KeystoreManager([keystore])
-//					} else {
-						let keystore = EthereumKeystoreV3(keyData)!
-						keystoreManager = KeystoreManager([keystore])
-//					}
-					
-					completion(SDKResponse(success: true, message: "KeystoreManager created successfully", error: nil), keystoreManager)
-//				} catch {
-//					completion(SDKResponse(success: false, message: "Failed to create KeystoreManager", error: error), nil)
-//				}
+				//				do {
+				
+				let keystoreManager: KeystoreManager
+				//					if wallet.isHD {
+				//						let keystore = BIP32Keystore(keyData)!
+				//						keystoreManager = KeystoreManager([keystore])
+				//					} else {
+				let keystore = EthereumKeystoreV3(keyData)!
+				keystoreManager = KeystoreManager([keystore])
+				//					}
+				guard let web3 = web3 else {
+					let response = SDKResponse(success: false, message: "KeystoreManager not Set up and the reason is web3 is not setup yet", error: nil)
+					completion(response)
+					return
+				}
+				web3.addKeystoreManager(keystoreManager)
+				self.keystore = keystore
+				self.keystoreManager = keystoreManager
+				completion(SDKResponse(success: true, message: "KeystoreManager created successfully", error: nil))
+				//				} catch {
+				//					completion(SDKResponse(success: false, message: "Failed to create KeystoreManager", error: error), nil)
+				//				}
 			}
 		} catch {
-			completion(SDKResponse(success: false, message: "Failed to generate Keystore from private key", error: error), nil)
-		}	
+			completion(SDKResponse(success: false, message: "Failed to generate Keystore from private key", error: error))
+		}
 	}
 
-	func setKeyStoreManager(keystoreManager : KeystoreManager, completion: @escaping (SDKResponse) -> Void) {
-		guard let web3 = web3 else {
-			let response = SDKResponse(success: false, message: "KeystoreManager not Set up and the reason is web3 is not setup yet", error: nil)
-			completion(response)
-			return
-		}
-		web3.addKeystoreManager(keystoreManager)
-		let response = SDKResponse(success: true, message: "KeystoreManager Set up Successfully", error: nil)
-		completion(response)
-	}
 
 	
 	/// Create a new wallet
 	///
 	/// - Parameter completion: Completion handler returning SDKResponse and mnemonics string
-	func createWallet(completion: @escaping (SDKResponse, String?) -> Void) {
-		walletManager.createWallet(completion: completion)
+	func createWallet(entropy : Int, completion: @escaping (SDKResponse, String?) -> Void) {
+		walletManager.createWallet(entropy: entropy, completion: completion)
 	}
 	
 	/// Fetch address from mnemonics
@@ -123,9 +123,9 @@ class Web3SDKMaster {
 	/// - Parameters:
 	///   - wallet: The wallet for which private key is to be fetched
 	///   - completion: Completion handler returning SDKResponse and private key string
-	func getPrivateKey(wallet: Wallet, completion: @escaping (SDKResponse, String?) -> Void) {
-		walletManager.getPrivateKey(wallet: wallet, completion: completion)
-	}
+//	func getPrivateKey(wallet: Wallet, completion: @escaping (SDKResponse, String?) -> Void) {
+//		walletManager.getPrivateKey(wallet: wallet, completion: completion)
+//	}
 	
 	/// Get balance for a wallet address
 	///
@@ -169,6 +169,10 @@ class Web3SDKMaster {
 	///   - privateKey: Private key string
 	///   - completion: Completion handler returning SDKResponse and Ethereum address
 	func getAddressFromPrivateKey(password : String, privateKey: String, completion: @escaping (SDKResponse, EthereumAddress?) -> Void) {
+		guard let keyStore = self.keystore else{
+			let response = SDKResponse(success: false, message: "Web3-Keystore is not initialized", error: nil)
+			return
+		}
 		networkManager.getAddressFromPrivateKey(password: password, privateKey: privateKey) { response, address in
 			completion(response, address)
 		}
