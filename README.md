@@ -3,9 +3,8 @@ iOS App demonstrating Ethereum Wallet functionality.
 
 This app is designed for macOS and showcases the functionality of an Ethereum Wallet. For demonstration purposes, it utilizes the Ganache local server, providing flexibility in handling various coins and an easy-to-use transfer interface.
 
-To set up Ganache, refer to the instructions on [GitHub](https://github.com/trufflesuite/ganache).
 
-After installing Ganache, follow these steps:
+To install Ganache, follow these steps:[GitHub](https://github.com/trufflesuite/ganache).
 
 1. Open Terminal and install Ganache globally:
    $ npm install ganache --global
