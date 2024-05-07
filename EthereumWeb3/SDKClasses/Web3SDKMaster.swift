@@ -158,6 +158,7 @@ class Web3SDKMaster {
 			completion(response, nil)
 			return
 		}
+		web3.addKeystoreManager(self.keystoreManager)
 		transactionManager.doTransaction(web3: web3, from: fromAddress, to: toAddress, amount: amount) { response, txnSendingResult in
 			completion(response, txnSendingResult)
 		}

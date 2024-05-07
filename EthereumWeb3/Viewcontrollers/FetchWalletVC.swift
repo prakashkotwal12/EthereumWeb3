@@ -21,9 +21,10 @@ class FetchWalletVC: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		if Constants.useAlchemyServer{
-			wallet = Wallet(address: AlchemyConstants().address1, name: Constants.name, isHD: false)
-			self.walletAddressLabel.text = wallet?.address ?? ""
-			getBalance()
+//			wallet = Wallet(address: AlchemyConstants().address1, name: Constants.name, isHD: false)
+//			self.walletAddressLabel.text = wallet?.address ?? ""
+//			getBalance()
+			self.walletPhraseTextView.text = AlchemyConstants().mnemonics1
 		}
 	}
 	

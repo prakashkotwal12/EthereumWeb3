@@ -88,6 +88,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="ZO3-6b-wex"/>
                     <connections>
+                        <outlet property="lblSelectServer" destination="LAS-ed-3ph" id="kEL-2H-bUw"/>
                         <outlet property="serverSelection" destination="9mk-wU-h1p" id="u79-Ql-11e"/>
                         <segue destination="8Va-LI-HVO" kind="show" identifier="SegToCreate" id="mH7-Mx-QIM"/>
                         <segue destination="fiT-0O-sg6" kind="show" identifier="SegToFetch" id="zN7-pL-edF"/>

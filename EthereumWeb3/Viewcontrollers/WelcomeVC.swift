@@ -11,12 +11,14 @@ class WelcomeVC: UIViewController {
 	let sdkHelper = SDKHelper.sharedSDKHelper
 	let sharedUtils = SharedUtilities.shared
 	
+	@IBOutlet weak var lblSelectServer: UILabel!
 	@IBOutlet weak var serverSelection: UISegmentedControl!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		serverSelection.selectedSegmentIndex = Constants.useAlchemyServer ? 1 : 0
-		
+//		serverSelection.isHidden = true
+//		lblSelectServer.isHidden = true
 		// Dispatch a task to a background thread
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
 			self.sharedUtils.showLoader(viewController: self)

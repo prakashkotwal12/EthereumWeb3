@@ -45,7 +45,6 @@ class CreateWalletVC: UIViewController {
 					self.phraseLabel.text = mnemonics
 				} else {
 					self.showAlert(title: "Error", message: response.message)
-//					self.handleCreateWalletError(response.error ?? CustomError.unknownError)
 				}
 			}
 		}
@@ -55,10 +54,6 @@ class CreateWalletVC: UIViewController {
 		guard let text = text else { return }
 		UIPasteboard.general.string = text
 	}
-	
-//	func handleCreateWalletError(_ error: Error) {
-//		showAlert(title: "Error", message: error.localizedDescription)
-//	}
 	
 	func showAlert(title: String, message: String) {
 		sharedUtils.showAlert(title: title, message: message, viewController: self)

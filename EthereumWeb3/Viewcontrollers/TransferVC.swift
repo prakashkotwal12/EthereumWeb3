@@ -15,7 +15,7 @@ class TransferVC: UIViewController {
 	@IBOutlet weak var lblAddress1: UILabel!
 	
 	let sdkHelper = SDKHelper.sharedSDKHelper
-	let ganacheHelper = LocalTransaction()
+	let ganacheHelper = GanacheHelper()
 	let sharedUtils = SharedUtilities.shared
 	
 	var address1: String!
@@ -35,8 +35,15 @@ class TransferVC: UIViewController {
 			self.sharedUtils.showLoader(viewController: self)
 		}
 		if Constants.useAlchemyServer {
-			self.sharedUtils.hideLoader()
 			// Handle Alchemy server setup
+			self.address1 = AlchemyConstants().address1
+			self.address2 = AlchemyConstants().address2
+			
+			self.lblAddress1.text = address1
+			self.lblAddress2.text = address2
+			
+			self.updateBalance(for: self.lblBalanceAddress1, address: self.address1)
+			self.updateBalance(for: self.lblBalanceAddress2, address: self.address2)
 		} else {
 			DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1) {
 				self.getLocalAddress1()
@@ -94,7 +101,26 @@ class TransferVC: UIViewController {
 		sharedUtils.showLoader(viewController: self)
 		let numberInField = Int(txtAmount.text ?? "") ?? 0
 		DispatchQueue.global(qos: .background).async {
-			self.doLocalTransfer(amount: numberInField)
+			if Constants.useAlchemyServer{
+				self.doAlchemyTransfer(amount: numberInField)
+			}else{
+				self.doLocalTransfer(amount: numberInField)
+			}
+		}
+	}
+	
+	func doAlchemyTransfer(amount: Int) {
+		sdkHelper.doAlchemyTxn(address1: self.address1, address2: self.address2){ txnResponse, result in
+			if txnResponse.success {
+				print("Transaction done")
+				self.updateBalance(for: self.lblBalanceAddress1, address: self.address1)
+				self.updateBalance(for: self.lblBalanceAddress2, address: self.address2)
+			} else {
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+					self.sharedUtils.hideLoader()
+				}
+				print("Transaction not done: \(txnResponse.message)")
+			}
 		}
 	}
 	
@@ -105,6 +131,9 @@ class TransferVC: UIViewController {
 				self.updateBalance(for: self.lblBalanceAddress1, address: self.address1)
 				self.updateBalance(for: self.lblBalanceAddress2, address: self.address2)
 			} else {
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+					self.sharedUtils.hideLoader()
+				}
 				print("Transaction not done: \(txnResponse.message)")
 			}
 		}

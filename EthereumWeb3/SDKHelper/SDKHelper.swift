@@ -74,7 +74,15 @@ class SDKHelper {
 		let amountBigUInt = BigUInt(amount)
 		let ethAddress1 = EthereumAddress(address1)
 		let ethAddress2 = EthereumAddress(address2)
-		LocalTransaction().sendTxn(address1: ethAddress1, address2: ethAddress2, amount: amountBigUInt, completion: completion)
+		TransactionHelper().sendTxn(address1: ethAddress1, address2: ethAddress2, amount: amountBigUInt, completion: completion)
+	}
+	
+	func doAlchemyTxn(address1 : String, address2: String, amount: Int = 100, completion: @escaping (SDKResponse, TransactionSendingResult?) -> Void) {
+		let amountBigUInt = BigUInt(amount)
+		let ethAddress1 = EthereumAddress(address1)
+		let ethAddress2 = EthereumAddress(address2)
+		//TransactionHelper().doAlchemyTransaction()
+		TransactionHelper().sendTxn(address1: ethAddress1, address2: ethAddress2, amount: amountBigUInt, completion: completion)
 	}
 	
 	/// Generates mnemonics and returns them along with an SDKResponse.
