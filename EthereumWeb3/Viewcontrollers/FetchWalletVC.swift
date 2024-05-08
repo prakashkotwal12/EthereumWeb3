@@ -26,6 +26,11 @@ class FetchWalletVC: UIViewController {
 //			getBalance()
 			self.walletPhraseTextView.text = AlchemyConstants().mnemonics1
 		}
+		else{
+			
+			self.wallet = Wallet(address: GanacheConstants().address1, name: Constants.name, isHD: false)
+			self.walletAddressLabel.text = wallet?.address ?? ""
+		}
 	}
 	
 	@IBAction func onClickFetchBalance(_ sender: UIButton) {

@@ -62,22 +62,21 @@ class TransactionManager {
 	private func sendTransaction(sender : EthereumAddress, web3: Web3, transaction: CodableTransaction, completion: @escaping (Bool, String, Error?, TransactionSendingResult?) -> Void) {
 		Task {
 			do {
-				var sepoliaTxn = transaction
-				
-				let signedTx = try web3.wallet.signTX(transaction: &sepoliaTxn, account: sender, password: Constants.password)
-				print("resulyt of signedtx: \(signedTx)")
+//				var sepoliaTxn = transaction
+////				
+//				let signedTx = try web3.wallet.signTX(transaction: &sepoliaTxn, account: sender, password: Constants.password)
+//				print("resulyt of signedtx: \(signedTx)")
 				// Send transaction
 				let transfer = try await web3.eth.send(transaction)
-				
-
+//				let transfer1 = try await web3.eth.send(raw: transaction.data)
+//				print("transfer2: \(dump(transfer1))")
 				// Complete with success
 				completion(true, "Transaction successful", nil, transfer)
 			} catch {
 				// Complete with error
-				print("txn sign fale: \(error.localizedDescription)")
+				print("txn sign failed: \(error.localizedDescription)")
 				completion(false, "Transaction failed", error, nil)
 			}
 		}
 	}
-	
 }

@@ -32,7 +32,10 @@ class Web3SDKMaster {
 		Task{
 			do {
 				web3 = try await Web3.new(providerURL)
+//				let provider = try await Web3HttpProvider(url: providerURL, network: nil)
+//				web3 =  Web3(provider: provider)
 				print("Web3 Setup using URL: \(providerURL)")
+				
 				self.setKeyStoreManager(password: password, privateKey: privateKey, completion: completion)
 //				completion(SDKResponse(success: true, message: "Web3 setup successful", error: nil))
 			} catch {
